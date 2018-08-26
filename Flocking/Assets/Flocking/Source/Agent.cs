@@ -24,7 +24,7 @@ public class Agent : MonoBehaviour {
 	void Start(){
 		lineRenderer = this.GetComponent<LineRenderer>();
 		agentArray = GameObject.FindObjectsOfType<Agent>().ToList();
-		this.rigidbody.velocity = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+		this.GetComponent<Rigidbody>().velocity = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
 		this.transform.position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-5.0f, 5.0f), Random.Range(-5.0f, 5.0f));
 
 		alignmentWeight = Random.Range(0.0f,50.0f);
@@ -38,20 +38,20 @@ public class Agent : MonoBehaviour {
 		separation = ComputeSeparation();
 		DrawLineToNeighbors();
 	
-		this.rigidbody.velocity += new Vector3(alignment.x * alignmentWeight + cohesion.x * cohesionWeight + separation.x * separationWeight, alignment.y * alignmentWeight + cohesion.y * cohesionWeight + separation.y * separationWeight , alignment.z * alignmentWeight + cohesion.y * cohesionWeight + separation.z * separationWeight) * speed * Time.deltaTime;
-		this.rigidbody.velocity = new Vector3(Mathf.Clamp(this.rigidbody.velocity.x, -5, 5), Mathf.Clamp(this.rigidbody.velocity.y, -5, 5), Mathf.Clamp(this.rigidbody.velocity.z, -5, 5));
-		this.rigidbody.velocity.Normalize();
+		this.GetComponent<Rigidbody>().velocity += new Vector3(alignment.x * alignmentWeight + cohesion.x * cohesionWeight + separation.x * separationWeight, alignment.y * alignmentWeight + cohesion.y * cohesionWeight + separation.y * separationWeight , alignment.z * alignmentWeight + cohesion.y * cohesionWeight + separation.z * separationWeight) * speed * Time.deltaTime;
+		this.GetComponent<Rigidbody>().velocity = new Vector3(Mathf.Clamp(this.GetComponent<Rigidbody>().velocity.x, -5, 5), Mathf.Clamp(this.GetComponent<Rigidbody>().velocity.y, -5, 5), Mathf.Clamp(this.GetComponent<Rigidbody>().velocity.z, -5, 5));
+		this.GetComponent<Rigidbody>().velocity.Normalize();
 
 		ComputeWall();
 	}
 
 	void ComputeWall(){
 		if(this.transform.position.x >= 15 || this.transform.position.x <= -15 || this.transform.position.y >= 15 || this.transform.position.y <= -15 ||this.transform.position.z >= 15 || this.transform.position.z <= -20){
-			this.rigidbody.velocity += -Vector3.MoveTowards(this.transform.position, Vector3.zero, 0.1f).normalized; 
-			this.renderer.material.color = new Color(1, 0, 0, 1); //red
+			this.GetComponent<Rigidbody>().velocity += -Vector3.MoveTowards(this.transform.position, Vector3.zero, 0.1f).normalized; 
+			this.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1); //red
 		}
 		else
-			this.renderer.material.color = new Color(1, 1, 1, 1); // white
+			this.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1); // white
 	}
 
 	void DrawLineToNeighbors(){
@@ -79,9 +79,9 @@ public class Agent : MonoBehaviour {
 		foreach(Agent agent in agentArray){
 			if(agent != this){
 				if(Vector3.Distance(this.transform.position, agent.transform.position) < 5){
-					v.x += agent.rigidbody.velocity.x;
-					v.y += agent.rigidbody.velocity.y;
-					v.z += agent.rigidbody.velocity.z;
+					v.x += agent.GetComponent<Rigidbody>().velocity.x;
+					v.y += agent.GetComponent<Rigidbody>().velocity.y;
+					v.z += agent.GetComponent<Rigidbody>().velocity.z;
 					neighborCount++;
 				}
 			}
